@@ -1,0 +1,90 @@
+<aura:component controller="EmailConversationCntl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <!-- Handle component initialization in a client-side controller -->
+    
+    <aura:handler event="c:EventCloseModelPopup" action="{!c.handleEventCloseModelPopup}"/>
+    <aura:attribute name="overlayPanel" type="Aura.Component[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="EmailMsgs" type="EmailMessage[]" />
+    <lightning:overlayLibrary aura:id="overlayLib" cssClass="toggle"/>
+    
+    
+    <lightning:buttonIcon iconName="utility:email" variant="border-filled" alternativeText="Send Email" iconClass="dark" name="Send Email"/>
+    <lightning:button class="sendemail" aura:id="submit" type="SendEmail" label="Send Email" onclick="{!c.sendemailmsg}"/>
+    
+    <div class="slds-scrollable_y" style="height:40rem; width:27rem;">
+        <!-- Iterate over the list of contacts and display them -->
+        <aura:iteration var="oneMsg" items="{!v.EmailMsgs}">
+            <li>
+                <div class="slds-timeline__item_expandable slds-timeline__item_email slds-is-open">
+                    <span class="slds-assistive-text">email</span>
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <button class="slds-button slds-button_icon" title="Toggle details for Re: Mobile conversation on Monday with the new global team" aria-controls="email-item-narrow" aria-expanded="true">
+                                <span class="slds-assistive-text"> Toggle details for Re: Mobile conversation on Monday with the new global team</span>
+                            </button>
+                            <div class="slds-icon_container slds-icon-standard-email slds-timeline__icon" title="email">
+                                <lightning:icon iconName="standard:email"/>
+                            </div>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
+                                    <h3 class="slds-truncate" title="Re: Mobile conversation on Monday with the new global team">
+                                        <a href="javascript:void(0);">
+                                            <strong>  {!oneMsg.Subject} </strong>
+                                        </a>
+                                    </h3>
+                                    <aura:if isTrue="{!oneMsg.iconBlue}">
+                                        <div class="slds-no-flex green">
+                                            <span class="slds-icon_container slds-icon-utility-groups" title="Group email">
+                                                <lightning:icon class="iconblue" iconName="utility:arrowup"/>
+                                                <span class="slds-assistive-text">Group email</span>
+                                            </span>
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!!oneMsg.iconBlue}">
+                                        <div class="slds-no-flex red">
+                                            <span class="slds-icon_container slds-icon-utility-groups" title="Group email">
+                                                <lightning:icon class="icongreen" iconName="utility:arrowdown"/>
+                                                <span class="slds-assistive-text">Group email</span>
+                                            </span>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                                <div class="slds-timeline__actions slds-timeline__actions_inline">
+                                    <p class="slds-timeline__date"> 
+                                        <lightning:formattedDateTime value="{!oneMsg.MessageDate}" hour12="True" year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit" timeZoneName="short"/>
+                                        
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="slds-m-horizontal_xx-small"><a href="javascript:void(0);">You</a> emailed <a href="javascript:void(0);">{!oneMsg.Lead__r.Name}</a> </p>
+                            <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small slds-p-around_medium" id="email-item-narrow"
+                                     aria-hidden="false">
+                                <ul class="slds-list_horizontal slds-wrap">
+                                    <li class="slds-grid slds-grid--vertical slds-size_1-of-2 slds-p-bottom_small">
+                                        <span class="slds-text-title slds-p-bottom_x-small">From Address</span>
+                                        <span class="slds-text-body_medium slds-truncate" title="Jackie Dewar"><a href="javascript:void(0);">{!oneMsg.FromAddress}</a></span>
+                                    </li>
+                                    <li class="slds-grid slds-grid--vertical slds-size_1-of-2 slds-p-bottom_small">
+                                        <span class="slds-text-title slds-p-bottom_x-small">To Address</span>
+                                        <span class="slds-text-body_medium slds-truncate" title="Lea Chan"><a href="javascript:void(0);">{!oneMsg.ToAddress}</a></span>
+                                    </li>
+                                </ul>
+                                <div>
+                                    <span class="slds-text-title">Text Body</span>
+                                    <p class="slds-p-top_x-small">                                        
+                                        <aura:unescapedHtml value="{!oneMsg.HtmlBody}"/>
+                                    </p>
+                                </div>
+                                <br/>                                
+                                <lightning:button name="modal" label="Reply" aura:id="{!oneMsg.Id}" value="{!oneMsg.Id}" onclick="{!c.replyEmailmsg}" />
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </aura:iteration>
+        <!-- Iteration End -->        
+    </div>
+</aura:component>
